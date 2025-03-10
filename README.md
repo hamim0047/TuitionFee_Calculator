@@ -1,1 +1,1 @@
-https://hamim0047.github.io/TuitionFee_Calculator/
+https://hamim0047.github.io/TuitionFees_Calculator/
