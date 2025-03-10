@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuition Fee Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/UIU.jpg') no-repeat center center/cover;
+            text-align:start;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 420px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        h2 {
+            color: #ff5722;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input{
+            width: 95%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        select, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: linear-gradient(45deg, #ff5722, #e64a19);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #e64a19, #bf360c);
+            transform: scale(1.05);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .highlight {
+            color: #f60000;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Tuition Fee Calculator</h2>
+        <label>Total Fee:</label>
+        <input type="number" id="totalFee" placeholder="Enter total fee">
+        
+        <label>Trimester Batch: <span class="highlight">(e.g., 231, 232, 233, 241, etc.)</span></label>
+        <input type="number" id="batch" placeholder="Enter batch number">
+        
+        <label>Scholarship:</label>
+        <select id="scholarship">
+            <option value="0">No Scholarship</option>
+            <option value="100">100%</option>
+            <option value="50">50%</option>
+            <option value="25">25%</option>
+        </select>
+        
+        <button onclick="calculateFee()">Calculate</button>
+        <div id="result"></div>
+        <button onclick="downloadResult()">Download PNG</button>
+    </div>
+
+    <script>
+        function calculateFee() {
+            let totalFee = parseFloat(document.getElementById('totalFee').value);
+            let batch = parseInt(document.getElementById('batch').value);
+            let scholarship = parseInt(document.getElementById('scholarship').value);
+            let registrationFee = batch <= 231 ? 5000 : 6500;
+            let tuitionFee = totalFee - registrationFee;
+            
+            let discount = (scholarship / 100) * tuitionFee;
+            let payableFee = tuitionFee - discount + registrationFee;
+
+            let firstPart = (payableFee * 40) / 100;
+            let secondPart = (payableFee * 30) / 100;
+            let thirdPart = (payableFee * 30) / 100;
+
+            document.getElementById('result').innerHTML = `
+                <h3 style="color: #e64a19">Payment Breakdown</h3>
+                <p><strong>Registration Fee:</strong> ${registrationFee.toFixed(2)}</p>
+                <p><strong>Scholarship Discount:</strong> ${discount.toFixed(2)}</p>
+                <p><strong>Total Payable Fee:</strong> ${payableFee.toFixed(2)}</p>
+                <hr>
+                <p><strong>1st Installment (40%):</strong> ${firstPart.toFixed(2)}</p>
+                <p><strong>2nd Installment (30%):</strong> ${secondPart.toFixed(2)}</p>
+                <p><strong>3rd Installment (30%):</strong> ${thirdPart.toFixed(2)}</p>
+            `;
+        }
+
+        function downloadResult() {
+            html2canvas(document.getElementById('result')).then(canvas => {
+                let link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'tuition_fee_result.png';
+                link.click();
+            });
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
