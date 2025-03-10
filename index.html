@@ -126,10 +126,26 @@
                 let link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 link.download = 'tuition_fee_result.png';
-                link.click();
+                
+                // For mobile browsers: force download
+                if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
+                    // Create a Blob and URL for mobile compatibility
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const mobileLink = document.createElement('a');
+                        mobileLink.href = url;
+                        mobileLink.download = 'tuition_fee_result.png';
+                        mobileLink.click();
+                        URL.revokeObjectURL(url);
+                    });
+                } else {
+                    // Desktop fallback: trigger download directly
+                    link.click();
+                }
             });
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
